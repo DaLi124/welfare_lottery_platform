@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.shijiebei.mapper.LogOrtunellaVenosaMapper">
+
+    <resultMap id="BaseResultMap" type="org.springblade.modules.shijiebei.entity.LogOrtunellaVenosa">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="number" column="number" jdbcType="INTEGER"/>
+            <result property="state" column="state" jdbcType="TINYINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="userOperation" column="user_operation" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,number,state,
+        user_id,user_operation
+    </sql>
+</mapper>

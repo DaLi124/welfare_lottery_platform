@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.shijiebei.mapper.PurchaseLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="purchaseLogResultMap" type="org.springblade.modules.shijiebei.entity.PurchaseLog">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="team_main" property="teamMain"/>
+        <result column="url_main" property="urlMain"/>
+        <result column="team_guest" property="teamGuest"/>
+        <result column="url_guest" property="urlGuest"/>
+        <result column="result_main" property="resultMain"/>
+        <result column="result_guest" property="resultGuest"/>
+        <result column="type" property="type"/>
+        <result column="game_date" property="gameDate"/>
+        <result column="multiplying_power_host" property="multiplyingPowerHost"/>
+        <result column="purchase_type" property="purchaseType"/>
+        <result column="result_type" property="resultType"/>
+        <result column="user_fortunella_venosa" property="userFortunellaVenosa"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+
+    <select id="selectPurchaseLogPage" resultMap="purchaseLogResultMap">
+        select * from t_purchase_log where is_deleted = 0
+    </select>
+
+</mapper>

@@ -1,6 +1,6 @@
 #服务器配置
 server:
-  port: 80
+  port: 1889
   undertow:
     threads:
       # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
@@ -31,7 +31,6 @@ spring:
       test-on-borrow: false
       test-on-return: false
       test-while-idle: true
-      time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 300000
       stat-view-servlet:
         enabled: true
@@ -239,3 +238,5 @@ blade:
     #排除多租户逻辑
     exclude-tables:
       - blade_user
+reggie:
+  path: D:\img\

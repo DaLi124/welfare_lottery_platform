@@ -6,10 +6,10 @@ RUN mkdir -p /blade
 
 WORKDIR /blade
 
-EXPOSE 8800
+EXPOSE 1889
 
 ADD ./target/blade-api.jar ./app.jar
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Ddruid.mysql.usePingMethod=false", "-jar", "app.jar"]
 
-CMD ["--spring.profiles.active=test"]
+CMD ["--spring.profiles.active=dev"]

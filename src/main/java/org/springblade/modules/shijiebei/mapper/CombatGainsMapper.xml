@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.shijiebei.mapper.CombatGainsMapper">
+
+    <resultMap id="BaseResultMap" type="org.springblade.modules.shijiebei.entity.CombatGains">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="state" column="state" jdbcType="TINYINT"/>
+            <result property="teamMain" column="team_main" jdbcType="VARCHAR"/>
+            <result property="urlMain" column="url_main" jdbcType="VARCHAR"/>
+            <result property="teamGuest" column="team_guest" jdbcType="VARCHAR"/>
+            <result property="urlGuest" column="url_guest" jdbcType="VARCHAR"/>
+            <result property="resultMain" column="result_main" jdbcType="VARCHAR"/>
+            <result property="resultGuest" column="result_guest" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="gameDate" column="game_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,state,team_main,
+        url_main,team_guest,url_guest,
+        result_main,result_guest,type,
+        game_date
+    </sql>
+</mapper>

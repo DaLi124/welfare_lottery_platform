@@ -17,6 +17,9 @@
 package org.springblade.modules.system.controller;
 
 
+import static org.springblade.core.cache.constant.CacheConstant.USER_CACHE;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -24,7 +27,16 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springblade.common.utils.ValidateCodeUtils;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.launch.constant.AppConstant;
@@ -45,23 +57,21 @@ import org.springblade.modules.system.excel.UserImporter;
 import org.springblade.modules.system.service.IUserService;
 import org.springblade.modules.system.vo.UserVO;
 import org.springblade.modules.system.wrapper.UserWrapper;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.springblade.core.cache.constant.CacheConstant.USER_CACHE;
 
 /**
  * 控制器
  *
  * @author Chill
  */
+@Slf4j
 @NonDS
 @ApiIgnore
 @RestController
@@ -105,9 +115,12 @@ public class UserController {
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "列表", notes = "传入account和realName")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R<IPage<UserVO>> list(@ApiIgnore @RequestParam Map<String, Object> user, Query query, BladeUser bladeUser) {
+	public R<IPage<UserVO>> list(@ApiIgnore @RequestParam Map<String, Object> user, Query query,
+		BladeUser bladeUser) {
 		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user, User.class);
-		IPage<User> pages = userService.page(Condition.getPage(query), (!bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID)) ? queryWrapper.lambda().eq(User::getTenantId, bladeUser.getTenantId()) : queryWrapper);
+		IPage<User> pages = userService.page(Condition.getPage(query),
+			(!bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID)) ? queryWrapper.lambda()
+				.eq(User::getTenantId, bladeUser.getTenantId()) : queryWrapper);
 		return R.data(UserWrapper.build().pageVO(pages));
 	}
 
@@ -122,8 +135,11 @@ public class UserController {
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "列表", notes = "传入account和realName")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R<IPage<UserVO>> page(@ApiIgnore User user, Query query, Long deptId, BladeUser bladeUser) {
-		IPage<User> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
+	public R<IPage<UserVO>> page(@ApiIgnore User user, Query query, Long deptId,
+		BladeUser bladeUser) {
+		IPage<User> pages = userService.selectUserPage(Condition.getPage(query), user, deptId,
+			(bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY
+				: bladeUser.getTenantId()));
 		return R.data(UserWrapper.build().pageVO(pages));
 	}
 
@@ -170,7 +186,7 @@ public class UserController {
 	@ApiOperation(value = "权限设置", notes = "传入roleId集合以及menuId集合")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R grant(@ApiParam(value = "userId集合", required = true) @RequestParam String userIds,
-				   @ApiParam(value = "roleId集合", required = true) @RequestParam String roleIds) {
+		@ApiParam(value = "roleId集合", required = true) @RequestParam String roleIds) {
 		boolean temp = userService.grant(userIds, roleIds);
 		return R.status(temp);
 	}
@@ -182,7 +198,8 @@ public class UserController {
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "初始化密码", notes = "传入userId集合")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R resetPassword(@ApiParam(value = "userId集合", required = true) @RequestParam String userIds) {
+	public R resetPassword(
+		@ApiParam(value = "userId集合", required = true) @RequestParam String userIds) {
 		boolean temp = userService.resetPassword(userIds);
 		return R.status(temp);
 	}
@@ -193,10 +210,12 @@ public class UserController {
 	@PostMapping("/update-password")
 	@ApiOperationSupport(order = 9)
 	@ApiOperation(value = "修改密码", notes = "传入密码")
-	public R updatePassword(BladeUser user, @ApiParam(value = "旧密码", required = true) @RequestParam String oldPassword,
-							@ApiParam(value = "新密码", required = true) @RequestParam String newPassword,
-							@ApiParam(value = "新密码", required = true) @RequestParam String newPassword1) {
-		boolean temp = userService.updatePassword(user.getUserId(), oldPassword, newPassword, newPassword1);
+	public R updatePassword(BladeUser user,
+		@ApiParam(value = "旧密码", required = true) @RequestParam String oldPassword,
+		@ApiParam(value = "新密码", required = true) @RequestParam String newPassword,
+		@ApiParam(value = "新密码", required = true) @RequestParam String newPassword1) {
+		boolean temp = userService.updatePassword(user.getUserId(), oldPassword, newPassword,
+			newPassword1);
 		return R.status(temp);
 	}
 
@@ -219,7 +238,8 @@ public class UserController {
 	@ApiOperation(value = "用户列表", notes = "传入user")
 	public R<List<User>> userList(User user, BladeUser bladeUser) {
 		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user);
-		List<User> list = userService.list((!AuthUtil.isAdministrator()) ? queryWrapper.lambda().eq(User::getTenantId, bladeUser.getTenantId()) : queryWrapper);
+		List<User> list = userService.list((!AuthUtil.isAdministrator()) ? queryWrapper.lambda()
+			.eq(User::getTenantId, bladeUser.getTenantId()) : queryWrapper);
 		return R.data(list);
 	}
 
@@ -241,14 +261,16 @@ public class UserController {
 	@GetMapping("export-user")
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "导出用户", notes = "传入user")
-	public void exportUser(@ApiIgnore @RequestParam Map<String, Object> user, BladeUser bladeUser, HttpServletResponse response) {
+	public void exportUser(@ApiIgnore @RequestParam Map<String, Object> user, BladeUser bladeUser,
+		HttpServletResponse response) {
 		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user, User.class);
 		if (!AuthUtil.isAdministrator()) {
 			queryWrapper.lambda().eq(User::getTenantId, bladeUser.getTenantId());
 		}
 		queryWrapper.lambda().eq(User::getIsDeleted, BladeConstant.DB_NOT_DELETED);
 		List<UserExcel> list = userService.exportUser(queryWrapper);
-		ExcelUtil.export(response, "用户数据" + DateUtil.time(), "用户数据表", list, UserExcel.class);
+		ExcelUtil.export(response, "用户数据" + DateUtil.time(), "用户数据表", list,
+			UserExcel.class);
 	}
 
 	/**
@@ -310,6 +332,146 @@ public class UserController {
 	@GetMapping("/search/user")
 	public R<IPage<UserVO>> userSearch(@ApiIgnore UserVO user, @ApiIgnore Query query) {
 		return R.data(userService.selectUserSearch(user, query));
+	}
+
+	/**
+	 * 发送手机短信验证码
+	 */
+	@PostMapping("/sendMsg")
+	public R<String> sendMsg(@RequestBody User user, HttpSession session) {
+		//获取手机号
+		String phone = user.getPhone();
+
+		if (StringUtils.isNotEmpty(phone)) {
+			//生成随机的4位验证码
+			String code = ValidateCodeUtils.generateValidateCode(4).toString();
+			log.info("code={}", code);
+
+			//需要将生成的验证码保存到Session
+			session.setAttribute(phone, code);
+
+			return R.success("手机验证码短信发送成功");
+		}
+
+		return R.fail("短信发送失败");
+	}
+
+	/**
+	 * 移动端用户登录
+	 */
+	@PostMapping("/login")
+	public R<User> login(@RequestBody Map map, HttpSession session) {
+		log.info(map.toString());
+
+		//获取手机号
+		String phone = map.get("phone").toString();
+
+		//获取验证码
+		String code = map.get("code").toString();
+
+		//从Session中获取保存的验证码
+		Object codeInSession = session.getAttribute(phone);
+
+		//进行验证码的比对（页面提交的验证码和Session中保存的验证码比对）
+		if (codeInSession != null && codeInSession.equals(code)) {
+			//如果能够比对成功，说明登录成功
+
+			LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+			queryWrapper.eq(User::getPhone, phone);
+
+			User user = userService.getOne(queryWrapper);
+			session.setAttribute("user", user.getId());
+			return R.data(user);
+		}
+		return R.fail("登录失败");
+	}
+
+	/**
+	 * 移动端用户注册
+	 */
+	@PostMapping("/register")
+	public R<User> register(@RequestBody Map<String, String> map, HttpSession session) {
+		log.info(map.toString());
+
+		//获取手机号
+		String phone = map.get("phone").toString();
+		//获取验证码
+		String code = map.get("code").toString();
+
+		//从Session中获取保存的验证码
+		Object codeInSession = session.getAttribute(phone);
+
+		//进行验证码的比对（页面提交的验证码和Session中保存的验证码比对）
+		if (codeInSession != null && codeInSession.equals(code)) {
+			//如果能够比对成功，说明手机号正确
+
+			LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+			queryWrapper.eq(User::getPhone, phone);
+
+			User user = userService.getOne(queryWrapper);
+			if (user == null) {
+				//判断当前手机号对应的用户是否为新用户，如果是新用户就自动完成注册
+				user = new User();
+				user.setSex(Integer.getInteger(map.get("sex")));
+				user.setName(map.get("name"));
+				user.setAvatar(map.get("avatar"));
+				user.setUserFortunellaVenosa(Integer.getInteger(map.get("userFortunellaVenosa")));
+				user.setPhone(phone);
+				user.setStatus(1);
+				userService.save(user);
+				session.setAttribute("user", user.getId());
+				return R.data(user);
+			}
+
+			return R.fail("用户已经存在");
+		}
+		return R.fail("验证码错误");
+	}
+
+	/**
+	 * 移动端用户信息修改
+	 */
+	@PostMapping("/update_yi")
+	public R<User> update(@RequestBody Map<String, String> map, HttpSession session) {
+		log.info(map.toString());
+
+		//获取用户id
+		String id = map.get("id");
+
+		LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(User::getId, id);
+
+		User user = userService.getOne(queryWrapper);
+
+		if (user == null) {
+			return R.fail("用户不存在");
+		}
+
+		//获取手机号
+		String phone = map.get("phone");
+		if (!StringUtils.equals(user.getPhone(), phone)) {
+			//获取验证码
+			String code = map.get("code");
+
+			//从Session中获取保存的验证码
+			Object codeInSession = session.getAttribute(phone);
+
+			//进行验证码的比对（页面提交的验证码和Session中保存的验证码比对）
+			if (codeInSession != null && codeInSession.equals(code)) {
+				boolean a = true;
+			} else {
+				return R.fail("验证码错误");
+			}
+		}
+		user.setSex(Integer.getInteger(map.get("sex")));
+		user.setName(map.get("name"));
+		user.setAvatar(map.get("avatar"));
+		user.setUserFortunellaVenosa(Integer.getInteger(map.get("userFortunellaVenosa")));
+		user.setPhone(phone);
+		user.setStatus(Integer.getInteger(map.get("status")));
+		userService.updateById(user);
+		session.setAttribute("user", user.getId());
+		return R.data(user);
 	}
 
 }

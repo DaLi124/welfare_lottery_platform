@@ -63,6 +63,11 @@ public class SwaggerConfiguration {
 	}
 
 	@Bean
+	public Docket sjbDocket() {
+		return docket("世界杯模块", Collections.singletonList(AppConstant.BASE_PACKAGES + ".modules.shijiebei"));
+	}
+
+	@Bean
 	public Docket sysDocket() {
 		return docket("系统模块",
 			Arrays.asList(AppConstant.BASE_PACKAGES + ".modules.system", AppConstant.BASE_PACKAGES + ".modules.resource"));
