@@ -16,18 +16,19 @@
  */
 package org.springblade.modules.shijiebei.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.util.function.BiConsumer;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import lombok.Data;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 购买记录实体类
@@ -91,8 +92,10 @@ public class PurchaseLog implements Serializable {
 	/**
 	 * 比赛时间
 	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATETIME)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATETIME)
 	@ApiModelProperty(value = "比赛时间")
-	private LocalDateTime gameDate;
+	private Date gameDate;
 	/**
 	 * 购买赔率
 	 */

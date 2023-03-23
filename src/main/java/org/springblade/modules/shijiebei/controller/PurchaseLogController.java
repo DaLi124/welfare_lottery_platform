@@ -76,7 +76,8 @@ public class PurchaseLogController extends BladeController {
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入purchaseLog")
-	public R save(@Valid @RequestBody PurchaseLog purchaseLog) {
+	public R save(@Valid @RequestBody(required = false) PurchaseLog purchaseLog) {
+		purchaseLog.setState(false);
 		return R.status(purchaseLogService.save(purchaseLog));
 	}
 
@@ -86,7 +87,7 @@ public class PurchaseLogController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入purchaseLog")
-	public R update(@Valid @RequestBody PurchaseLog purchaseLog) {
+	public R update(@Valid @RequestBody(required = false) PurchaseLog purchaseLog) {
 		return R.status(purchaseLogService.updateById(purchaseLog));
 	}
 
