@@ -8,7 +8,7 @@ WORKDIR /blade
 
 EXPOSE 1889
 
-ADD ./target/blade-api.jar ./app.jar
+ADD ./target/welfare_lottery_platform_api.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Ddruid.mysql.usePingMethod=false", "-jar", "app.jar"]
 
