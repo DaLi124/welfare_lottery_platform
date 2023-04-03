@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.modules.shijiebei.entity.LogOrtunellaVenosa;
 import org.springblade.modules.shijiebei.mapper.LogOrtunellaVenosaMapper;
 import org.springblade.modules.shijiebei.service.LogOrtunellaVenosaService;
@@ -47,6 +48,7 @@ public class LogOrtunellaVenosaServiceImpl extends
         logOrtunellaVenosa.setState(0);
         logOrtunellaVenosa.setUserId(byId.getId());
         logOrtunellaVenosa.setUserOperation(byId.getId());
+        logOrtunellaVenosa.setCreateTime(DateUtil.now());
         baseMapper.insert(logOrtunellaVenosa);
         return R.success("充值成功。");
     }
@@ -71,6 +73,7 @@ public class LogOrtunellaVenosaServiceImpl extends
         logOrtunellaVenosa.setUserId(byId.getId());
         logOrtunellaVenosa.setNumber(-logOrtunellaVenosa.getNumber());
         logOrtunellaVenosa.setUserOperation(byId.getId());
+        logOrtunellaVenosa.setCreateTime(DateUtil.now());
         baseMapper.insert(logOrtunellaVenosa);
         return R.success("提现成功。");
 
