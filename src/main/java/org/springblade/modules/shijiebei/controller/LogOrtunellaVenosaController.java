@@ -102,4 +102,14 @@ public class LogOrtunellaVenosaController {
 		return logOrtunellaVenosaService.recharge(logOrtunellaVenosa);
 	}
 
+    /**
+     * 提现
+     *
+     * @return 返回信息
+     */
+    @PostMapping("/withdrawal")
+    public R<Object> withdrawal(@RequestBody LogOrtunellaVenosa logOrtunellaVenosa) {
+        return logOrtunellaVenosaService.withdrawal(logOrtunellaVenosa);
+    }
+
 }

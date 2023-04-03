@@ -1,9 +1,8 @@
 package org.springblade.modules.shijiebei.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.core.tool.api.R;
 import org.springblade.modules.shijiebei.entity.LogOrtunellaVenosa;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springblade.modules.shijiebei.entity.PlatformRules;
 
 /**
 * @author crush
@@ -15,4 +14,6 @@ public interface LogOrtunellaVenosaService extends IService<LogOrtunellaVenosa> 
     R<LogOrtunellaVenosa> select(LogOrtunellaVenosa logOrtunellaVenosa);
 
 	R<Object> recharge(LogOrtunellaVenosa logOrtunellaVenosa);
+
+    R<Object> withdrawal(LogOrtunellaVenosa logOrtunellaVenosa);
 }
