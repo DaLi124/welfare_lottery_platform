@@ -107,7 +107,7 @@ public class PurchaseLog implements Serializable {
 	@ApiModelProperty(value = "购买类别")
 	private Integer purchaseType;
 	/**
-	 * 比赛结果类别
+	 * 比赛结果类别(0未出结果1赢2亏)
 	 */
 	@ApiModelProperty(value = "比赛结果类别")
 	private Integer resultType;

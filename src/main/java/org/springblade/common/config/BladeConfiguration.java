@@ -42,6 +42,7 @@ public class BladeConfiguration implements WebMvcConfigurer {
 		secureRegistry.excludePathPatterns("/combatGains/**");
 		secureRegistry.excludePathPatterns("/common/**");
 		secureRegistry.excludePathPatterns("/employee/**");
+		secureRegistry.excludePathPatterns("/blade-user/**");
 		secureRegistry.excludePathPatterns("/hotSearch/**");
 		secureRegistry.excludePathPatterns("/log_ortunella_venosa/**");
 		secureRegistry.excludePathPatterns("/platformRules/**");
