@@ -1,6 +1,7 @@
 package org.springblade.modules.shijiebei.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.Calendar;
 import lombok.AllArgsConstructor;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
@@ -64,6 +65,7 @@ public class PurchaseLogServiceImpl extends ServiceImpl<PurchaseLogMapper, Purch
                 purchaseLog.setMultiplyingPowerHost(byId1.getMultiplyingPowerFlat());
                 break;
         }
+        purchaseLog.setCreateTime(Calendar.getInstance().getTime());
         baseMapper.insert(purchaseLog);
         // 扣除相应金币
         byId.setUserFortunellaVenosa(

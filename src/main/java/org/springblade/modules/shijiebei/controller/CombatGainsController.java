@@ -42,7 +42,7 @@ public class CombatGainsController {
 		//条件构造器
 		LambdaQueryWrapper<CombatGains> queryWrapper = new LambdaQueryWrapper<>();
 		//添加排序条件，根据sort进行排序
-		queryWrapper.orderByDesc(CombatGains::getId);
+		queryWrapper.orderByAsc(CombatGains::getId);
 
 		//分页查询
 		combatGainsService.page(pageInfo, queryWrapper);

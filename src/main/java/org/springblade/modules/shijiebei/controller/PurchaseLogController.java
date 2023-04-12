@@ -16,23 +16,26 @@
  */
 package org.springblade.modules.shijiebei.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import lombok.AllArgsConstructor;
 import javax.validation.Valid;
-
+import lombok.AllArgsConstructor;
+import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.shijiebei.entity.PurchaseLog;
-import org.springblade.modules.shijiebei.vo.PurchaseLogVO;
 import org.springblade.modules.shijiebei.service.IPurchaseLogService;
-import org.springblade.core.boot.ctrl.BladeController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 购买记录 控制器
@@ -66,6 +69,7 @@ public class PurchaseLogController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入purchaseLog")
 	public R<IPage<PurchaseLog>> list(PurchaseLog purchaseLog, Query query) {
+		query.setDescs("create_time");
 		IPage<PurchaseLog> pages = purchaseLogService.page(Condition.getPage(query), Condition.getQueryWrapper(purchaseLog));
 		return R.data(pages);
 	}

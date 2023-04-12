@@ -122,6 +122,9 @@ public class PurchaseLog implements Serializable {
 	@ApiModelProperty(value = "状态")
 	private Boolean state;
 
+	@JsonFormat(pattern = DateUtil.PATTERN_DATETIME)
+	private Date createTime;
+
 	@TableField(exist = false)
 	private Integer combatGainsId;
 
