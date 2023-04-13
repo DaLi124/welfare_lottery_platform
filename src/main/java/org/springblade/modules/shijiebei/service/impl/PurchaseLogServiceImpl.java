@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.shijiebei.entity.CombatGains;
 import org.springblade.modules.shijiebei.entity.LogOrtunellaVenosa;
@@ -70,6 +71,7 @@ public class PurchaseLogServiceImpl extends ServiceImpl<PurchaseLogMapper, Purch
                 break;
         }
         purchaseLog.setCreateTime(Calendar.getInstance().getTime());
+        purchaseLog.setResultType(-1);
         baseMapper.insert(purchaseLog);
         // 扣除相应金币
         byId.setUserFortunellaVenosa(
@@ -81,6 +83,7 @@ public class PurchaseLogServiceImpl extends ServiceImpl<PurchaseLogMapper, Purch
         logOrtunellaVenosa.setUserId(AuthUtil.getUserId());
         logOrtunellaVenosa.setUserOperation(AuthUtil.getUserId());
         logOrtunellaVenosa.setNumber(-purchaseLog.getUserFortunellaVenosa());
+        logOrtunellaVenosa.setCreateTime(DateUtil.now());
         logOrtunellaVenosaService.save(logOrtunellaVenosa);
         return R.success("购买成功！");
     }

@@ -18,7 +18,7 @@
     </sql>
 
     <insert id="saveOrUpdateByTable" parameterType="org.springblade.modules.shijiebei.entity.HotSearch">
-        insert into hot_search(header, url, state, date)
+        insert into t_hot_search(header, url, state, date)
         values (#{header}, #{url}, #{state}, NOW())
         ON DUPLICATE KEY
             UPDATE header = #{header},

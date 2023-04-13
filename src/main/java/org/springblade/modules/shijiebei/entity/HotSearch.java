@@ -10,10 +10,10 @@ import lombok.Data;
 
 /**
  * 热搜信息
- * @TableName hot_search
+ * @TableName t_hot_search
  */
 @Data
-@TableName(value ="T_HOT_SEARCH")
+@TableName(value ="t_hot_search")
 public class HotSearch implements Serializable {
     /**
      * id

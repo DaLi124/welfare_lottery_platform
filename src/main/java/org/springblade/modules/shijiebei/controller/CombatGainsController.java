@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -19,6 +20,7 @@ import org.springblade.modules.shijiebei.service.CombatGainsService;
 import org.springblade.modules.shijiebei.service.IPurchaseLogService;
 import org.springblade.modules.shijiebei.service.LogOrtunellaVenosaService;
 import org.springblade.modules.shijiebei.service.PointsRankingService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,6 +82,7 @@ public class CombatGainsController {
      *
      * @return 返回信息
      */
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/update")
     public R<CombatGains> update(@RequestBody CombatGains combatGains) {
         // 判断比赛结果是否出来了
@@ -89,13 +92,13 @@ public class CombatGainsController {
                     new LambdaQueryWrapper<PurchaseLog>()
                             .eq(PurchaseLog::getTeamMain, combatGains.getTeamMain())
                             .eq(PurchaseLog::getTeamGuest, combatGains.getTeamGuest())
-                            .eq(PurchaseLog::getPurchaseType, "-1"));
+                            .eq(PurchaseLog::getResultType, "-1"));
             if (CollectionUtils.isNotEmpty(list)) {
                 // 如果主队赢
-                if (Integer.getInteger(combatGains.getResultMain()) > Integer.getInteger(
+                if (Integer.valueOf(combatGains.getResultMain()) > Integer.valueOf(
                         combatGains.getResultGuest())) {
                     list.forEach(purchaseLog -> {
-                        if (Integer.getInteger("1").equals(purchaseLog.getPurchaseType())) {
+                        if (Integer.valueOf("1").equals(purchaseLog.getPurchaseType())) {
                             // 修改购买记录，给用户添加金豆
                             upPurchaseLog(purchaseLog, combatGains, 1);
 
@@ -105,24 +108,29 @@ public class CombatGainsController {
                                             .eq(PointsRanking::getGroupsRedundance,
                                                     purchaseLog.getType())
                                             .eq(PointsRanking::getTeam,
-                                                    purchaseLog.getResultMain()));
-                            one.setIntegral(one.getIntegral() + 1);
+                                                    purchaseLog.getTeamMain()));
+                            one.setIntegral(String.valueOf(Integer.valueOf(
+                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
+
                             /*one.setNearLoss();
                             one.setWinDrawLose();*/
-                            pointsRankingService.updatePointsRanking(one);
+                            pointsRankingService.updateById(one);
                         } else {
-
+                            purchaseLog.setResultType(2);
+                            purchaseLog.setResultMain(combatGains.getResultMain());
+                            purchaseLog.setResultGuest(combatGains.getResultGuest());
+                            purchaseLogService.updateById(purchaseLog);
                         }
                     });
 
                 }
                 // 如果客队赢
-                if (Integer.getInteger(combatGains.getResultMain()) < Integer.getInteger(
+                if (Integer.valueOf(combatGains.getResultMain()) < Integer.valueOf(
                         combatGains.getResultGuest())) {
                     list.forEach(purchaseLog -> {
-                        if (Integer.getInteger("2").equals(purchaseLog.getPurchaseType())) {
+                        if (Integer.valueOf("2").equals(purchaseLog.getPurchaseType())) {
                             // 修改购买记录，给用户添加金豆
-                            upPurchaseLog(purchaseLog, combatGains, 2);
+                            upPurchaseLog(purchaseLog, combatGains, 1);
 
                             // 修改球队的积分
                             PointsRanking one = pointsRankingService.getOne(
@@ -130,30 +138,32 @@ public class CombatGainsController {
                                             .eq(PointsRanking::getGroupsRedundance,
                                                     purchaseLog.getType())
                                             .eq(PointsRanking::getTeam,
-                                                    purchaseLog.getResultMain()));
-                            one.setIntegral(one.getIntegral() + 1);
-                        } else {
+                                                    purchaseLog.getTeamGuest()));
+                            one.setIntegral(String.valueOf(Integer.valueOf(
+                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
 
+                            /*one.setNearLoss();
+                            one.setWinDrawLose();*/
+                            pointsRankingService.updateById(one);
+                        } else {
+                            purchaseLog.setResultType(2);
+                            purchaseLog.setResultMain(combatGains.getResultMain());
+                            purchaseLog.setResultGuest(combatGains.getResultGuest());
+                            purchaseLogService.updateById(purchaseLog);
                         }
                     });
                 }
                 // 如果平
                 if (StringUtil.equals(combatGains.getResultMain(), combatGains.getResultGuest())) {
                     list.forEach(purchaseLog -> {
-                        if (Integer.getInteger("3").equals(purchaseLog.getPurchaseType())) {
+                        if (Integer.valueOf("3").equals(purchaseLog.getPurchaseType())) {
                             // 修改购买记录，给用户添加金豆
-                            upPurchaseLog(purchaseLog, combatGains, 3);
-
-                            // 修改球队的积分
-                            PointsRanking one = pointsRankingService.getOne(
-                                    new LambdaQueryWrapper<PointsRanking>()
-                                            .eq(PointsRanking::getGroupsRedundance,
-                                                    purchaseLog.getType())
-                                            .eq(PointsRanking::getTeam,
-                                                    purchaseLog.getResultMain()));
-                            one.setIntegral(one.getIntegral() + 1);
+                            upPurchaseLog(purchaseLog, combatGains, 1);
                         } else {
-
+                            purchaseLog.setResultType(2);
+                            purchaseLog.setResultMain(combatGains.getResultMain());
+                            purchaseLog.setResultGuest(combatGains.getResultGuest());
+                            purchaseLogService.updateById(purchaseLog);
                         }
                     });
                 }
