@@ -13,7 +13,7 @@ import lombok.Data;
  * @TableName hot_search
  */
 @Data
-@TableName(value ="t_hot_search")
+@TableName(value ="T_HOT_SEARCH")
 public class HotSearch implements Serializable {
     /**
      * id

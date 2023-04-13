@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.shijiebei.entity.CombatGains;
 import org.springblade.modules.shijiebei.entity.LogOrtunellaVenosa;
 import org.springblade.modules.shijiebei.entity.PurchaseLog;
@@ -47,11 +48,14 @@ public class PurchaseLogServiceImpl extends ServiceImpl<PurchaseLogMapper, Purch
         if (purchaseLog.getUserFortunellaVenosa() > byId.getUserFortunellaVenosa()) {
             return R.fail("金币不足，请充值！");
         }
-        // 添加购买记录
-        purchaseLog.setPurchaseType(0);
+
         CombatGains byId1 = combatGainsService.getById(purchaseLog.getCombatGainsId());
         if (null == byId1) {
             return R.fail("购买项不存在。");
+        }
+        if (StringUtil.isNoneBlank(byId1.getResultMain()) && StringUtil.isNoneBlank(
+                byId1.getResultGuest())) {
+            return R.fail("结果已出不能购买。");
         }
         BeanUtil.copy(byId1, purchaseLog);
         switch (purchaseLog.getPurchaseType()) {

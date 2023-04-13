@@ -3,6 +3,7 @@ package org.springblade.modules.shijiebei.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.modules.shijiebei.entity.LogOrtunellaVenosa;
@@ -40,7 +41,7 @@ public class LogOrtunellaVenosaServiceImpl extends
             return R.fail("充值数量要大于0个。");
         }
         // 充值到用户
-        User byId = userService.getById(logOrtunellaVenosa.getUserId());
+        User byId = userService.getById(AuthUtil.getUserId());
         byId.setUserFortunellaVenosa(
                 byId.getUserFortunellaVenosa() + logOrtunellaVenosa.getNumber());
         userService.updateById(byId);
@@ -60,7 +61,7 @@ public class LogOrtunellaVenosaServiceImpl extends
             return R.fail("提现数量要大于0个。");
         }
         // 提现
-        User byId = userService.getById(logOrtunellaVenosa.getUserId());
+        User byId = userService.getById(AuthUtil.getUserId());
 
         if (byId.getUserFortunellaVenosa() < logOrtunellaVenosa.getNumber()) {
             return R.fail("你没有相关数量的金豆。");
