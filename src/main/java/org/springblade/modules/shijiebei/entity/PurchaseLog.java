@@ -115,7 +115,7 @@ public class PurchaseLog implements Serializable {
 	 * 购买金豆数量
 	 */
 	@ApiModelProperty(value = "购买金豆数量")
-	private Integer userFortunellaVenosa;
+	private Double userFortunellaVenosa;
 	/**
 	 * 状态
 	 */

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,8 @@ import org.springblade.modules.shijiebei.service.CombatGainsService;
 import org.springblade.modules.shijiebei.service.IPurchaseLogService;
 import org.springblade.modules.shijiebei.service.LogOrtunellaVenosaService;
 import org.springblade.modules.shijiebei.service.PointsRankingService;
+import org.springblade.modules.system.entity.User;
+import org.springblade.modules.system.service.IUserService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +46,8 @@ public class CombatGainsController {
     private final LogOrtunellaVenosaService logOrtunellaVenosaService;
 
     private final PointsRankingService pointsRankingService;
+
+    private final IUserService userService;
 
     /**
      * 分页查询
@@ -184,12 +189,19 @@ public class CombatGainsController {
                         purchaseLog.getUserFortunellaVenosa())
                 .multiply(purchaseLog.getMultiplyingPowerHost());
         LogOrtunellaVenosa logOrtunellaVenosa = new LogOrtunellaVenosa();
-        logOrtunellaVenosa.setState(1);
-        logOrtunellaVenosa.setNumber(subtract.intValue());
+        logOrtunellaVenosa.setState(0);
+        logOrtunellaVenosa.setNumber(subtract.setScale(2, RoundingMode.HALF_UP).doubleValue());
         logOrtunellaVenosa.setUserId(purchaseLog.getUserId());
         logOrtunellaVenosa.setUserOperation(AuthUtil.getUserId());
         logOrtunellaVenosa.setCreateTime(DateUtil.now());
         logOrtunellaVenosaService.save(logOrtunellaVenosa);
+
+        User user = new User();
+        user.setUserFortunellaVenosa(
+                user.getUserFortunellaVenosa() + subtract.setScale(2, RoundingMode.HALF_UP)
+                        .doubleValue());
+        user.setId(purchaseLog.getUserId());
+        userService.updateById(user);
     }
 
 

@@ -415,7 +415,7 @@ public class UserController {
 				user.setSex(Integer.getInteger(map.get("sex")));
 				user.setName(map.get("name"));
 				user.setAvatar(map.get("avatar"));
-				user.setUserFortunellaVenosa(Integer.getInteger(map.get("userFortunellaVenosa")));
+				user.setUserFortunellaVenosa(Double.valueOf(map.get("userFortunellaVenosa")));
 				user.setPhone(phone);
 				user.setStatus(1);
 				userService.save(user);
@@ -466,7 +466,7 @@ public class UserController {
 		user.setSex(Integer.getInteger(map.get("sex")));
 		user.setName(map.get("name"));
 		user.setAvatar(map.get("avatar"));
-		user.setUserFortunellaVenosa(Integer.getInteger(map.get("userFortunellaVenosa")));
+		user.setUserFortunellaVenosa(Double.valueOf(map.get("userFortunellaVenosa")));
 		user.setPhone(phone);
 		user.setStatus(Integer.getInteger(map.get("status")));
 		userService.updateById(user);

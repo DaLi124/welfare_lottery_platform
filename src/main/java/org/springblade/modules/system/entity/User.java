@@ -95,6 +95,6 @@ public class User extends TenantEntity {
 	/**
 	 * 金豆数量
 	 */
-	private Integer userFortunellaVenosa;
+	private Double userFortunellaVenosa;
 
 }

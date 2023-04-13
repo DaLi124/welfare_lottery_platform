@@ -25,7 +25,7 @@ public class LogOrtunellaVenosa implements Serializable {
     /**
      * 操作数量
      */
-    private Integer number;
+    private Double number;
 
     /**
      * 状态
