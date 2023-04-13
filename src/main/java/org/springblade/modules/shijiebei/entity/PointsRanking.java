@@ -63,6 +63,11 @@ public class PointsRanking implements Serializable {
     @TableField(value = "groups_m")
     private String groups;
 
+    /**
+     *  组别冗余
+     */
+    private String groupsRedundance;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

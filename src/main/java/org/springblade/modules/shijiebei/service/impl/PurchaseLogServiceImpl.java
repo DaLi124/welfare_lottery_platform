@@ -40,7 +40,7 @@ public class PurchaseLogServiceImpl extends ServiceImpl<PurchaseLogMapper, Purch
     public R<Object> purchase(PurchaseLog purchaseLog) {
         // 判断用户是否有相应数量金币
         purchaseLog.setUserId(AuthUtil.getUserId());
-        User byId = userService.getById(purchaseLog.getUserId());
+        User byId = userService.getById(AuthUtil.getUserId());
         if (purchaseLog.getUserFortunellaVenosa() <= 0) {
             return R.fail("购买金额需要大于0个金币。");
         }
