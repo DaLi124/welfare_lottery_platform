@@ -239,4 +239,4 @@ blade:
     exclude-tables:
       - blade_user
 reggie:
-  path: D:\img\
+  path: \home\imgs\
