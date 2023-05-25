@@ -2,6 +2,7 @@ package org.springblade.modules.shijiebei.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -131,28 +132,15 @@ public class CombatGainsController {
                             .eq(PurchaseLog::getTeamMain, combatGains.getTeamMain())
                             .eq(PurchaseLog::getTeamGuest, combatGains.getTeamGuest())
                             .eq(PurchaseLog::getResultType, "-1"));
-            if (CollectionUtils.isNotEmpty(list)) {
-                // 如果主队赢
-                if (Integer.valueOf(combatGains.getResultMain()) > Integer.valueOf(
-                        combatGains.getResultGuest())) {
+
+            // 如果主队赢
+            if (Integer.valueOf(combatGains.getResultMain()) > Integer.valueOf(
+                    combatGains.getResultGuest())) {
+                if (CollectionUtils.isNotEmpty(list)) {
                     list.forEach(purchaseLog -> {
                         if (Integer.valueOf("1").equals(purchaseLog.getPurchaseType())) {
                             // 修改购买记录，给用户添加金豆
                             upPurchaseLog(purchaseLog, combatGains, 1);
-
-                            // 修改球队的积分
-                            PointsRanking one = pointsRankingService.getOne(
-                                    new LambdaQueryWrapper<PointsRanking>()
-                                            .eq(PointsRanking::getGroupsRedundance,
-                                                    purchaseLog.getType())
-                                            .eq(PointsRanking::getTeam,
-                                                    purchaseLog.getTeamMain()));
-                            one.setIntegral(String.valueOf(Integer.valueOf(
-                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 3));
-
-                            /*one.setNearLoss();
-                            one.setWinDrawLose();*/
-                            pointsRankingService.updateById(one);
                         } else {
                             purchaseLog.setResultType(2);
                             purchaseLog.setResultMain(combatGains.getResultMain());
@@ -160,29 +148,39 @@ public class CombatGainsController {
                             purchaseLogService.updateById(purchaseLog);
                         }
                     });
-
                 }
-                // 如果客队赢
-                if (Integer.valueOf(combatGains.getResultMain()) < Integer.valueOf(
-                        combatGains.getResultGuest())) {
+                // 修改球队的积分
+                PointsRanking one = pointsRankingService.getOne(
+                        new LambdaQueryWrapper<PointsRanking>()
+                                .eq(PointsRanking::getGroupsRedundance,
+                                        combatGains.getType())
+                                .eq(PointsRanking::getTeam,
+                                        combatGains.getTeamMain()));
+                one.setIntegral(String.valueOf(Integer.valueOf(
+                        StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 3));
+
+                            /*one.setNearLoss();
+                            one.setWinDrawLose();*/
+                pointsRankingService.updateById(one);
+
+                PointsRanking tow = pointsRankingService.getOne(
+                        new LambdaQueryWrapper<PointsRanking>()
+                                .eq(PointsRanking::getGroupsRedundance,
+                                        combatGains.getType())
+                                .eq(PointsRanking::getTeam,
+                                        combatGains.getTeamGuest()));
+
+                jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "1");
+                jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "3");
+            }
+            // 如果客队赢
+            if (Integer.valueOf(combatGains.getResultMain()) < Integer.valueOf(
+                    combatGains.getResultGuest())) {
+                if (CollectionUtils.isNotEmpty(list)) {
                     list.forEach(purchaseLog -> {
                         if (Integer.valueOf("2").equals(purchaseLog.getPurchaseType())) {
                             // 修改购买记录，给用户添加金豆
                             upPurchaseLog(purchaseLog, combatGains, 1);
-
-                            // 修改球队的积分
-                            PointsRanking one = pointsRankingService.getOne(
-                                    new LambdaQueryWrapper<PointsRanking>()
-                                            .eq(PointsRanking::getGroupsRedundance,
-                                                    purchaseLog.getType())
-                                            .eq(PointsRanking::getTeam,
-                                                    purchaseLog.getTeamGuest()));
-                            one.setIntegral(String.valueOf(Integer.valueOf(
-                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 3));
-
-                            /*one.setNearLoss();
-                            one.setWinDrawLose();*/
-                            pointsRankingService.updateById(one);
                         } else {
                             purchaseLog.setResultType(2);
                             purchaseLog.setResultMain(combatGains.getResultMain());
@@ -191,33 +189,37 @@ public class CombatGainsController {
                         }
                     });
                 }
-                // 如果平
-                if (StringUtil.equals(combatGains.getResultMain(), combatGains.getResultGuest())) {
+
+                // 修改球队的积分
+                PointsRanking one = pointsRankingService.getOne(
+                        new LambdaQueryWrapper<PointsRanking>()
+                                .eq(PointsRanking::getGroupsRedundance,
+                                        combatGains.getType())
+                                .eq(PointsRanking::getTeam,
+                                        combatGains.getTeamGuest()));
+                one.setIntegral(String.valueOf(Integer.valueOf(
+                        StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 3));
+
+                            /*one.setNearLoss();
+                            one.setWinDrawLose();*/
+                pointsRankingService.updateById(one);
+
+                PointsRanking tow = pointsRankingService.getOne(
+                        new LambdaQueryWrapper<PointsRanking>()
+                                .eq(PointsRanking::getGroupsRedundance,
+                                        combatGains.getType())
+                                .eq(PointsRanking::getTeam,
+                                        combatGains.getTeamMain()));
+                jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "1");
+                jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "3");
+            }
+            // 如果平
+            if (StringUtil.equals(combatGains.getResultMain(), combatGains.getResultGuest())) {
+                if (CollectionUtils.isNotEmpty(list)) {
                     list.forEach(purchaseLog -> {
                         if (Integer.valueOf("3").equals(purchaseLog.getPurchaseType())) {
                             // 修改购买记录，给用户添加金豆
                             upPurchaseLog(purchaseLog, combatGains, 1);
-
-                            // 修改球队的积分
-                            PointsRanking one = pointsRankingService.getOne(
-                                    new LambdaQueryWrapper<PointsRanking>()
-                                            .eq(PointsRanking::getGroupsRedundance,
-                                                    purchaseLog.getType())
-                                            .eq(PointsRanking::getTeam,
-                                                    purchaseLog.getTeamGuest()));
-                            one.setIntegral(String.valueOf(Integer.valueOf(
-                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
-
-                            PointsRanking tow = pointsRankingService.getOne(
-                                    new LambdaQueryWrapper<PointsRanking>()
-                                            .eq(PointsRanking::getGroupsRedundance,
-                                                    purchaseLog.getType())
-                                            .eq(PointsRanking::getTeam,
-                                                    purchaseLog.getTeamMain()));
-                            tow.setIntegral(String.valueOf(Integer.valueOf(
-                                    Optional.ofNullable(tow.getIntegral()).orElse("0")) + 1));
-                            pointsRankingService.updateById(one);
-                            pointsRankingService.updateById(tow);
                         } else {
                             purchaseLog.setResultType(2);
                             purchaseLog.setResultMain(combatGains.getResultMain());
@@ -226,10 +228,72 @@ public class CombatGainsController {
                         }
                     });
                 }
+                // 修改球队的积分
+                PointsRanking one = pointsRankingService.getOne(
+                        new LambdaQueryWrapper<PointsRanking>()
+                                .eq(PointsRanking::getGroupsRedundance,
+                                        combatGains.getType())
+                                .eq(PointsRanking::getTeam,
+                                        combatGains.getTeamGuest()));
+                one.setIntegral(String.valueOf(Integer.valueOf(
+                        StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 1));
+
+                PointsRanking tow = pointsRankingService.getOne(
+                        new LambdaQueryWrapper<PointsRanking>()
+                                .eq(PointsRanking::getGroupsRedundance,
+                                        combatGains.getType())
+                                .eq(PointsRanking::getTeam,
+                                        combatGains.getTeamMain()));
+                tow.setIntegral(String.valueOf(Integer.valueOf(
+                        StringUtils.isBlank(tow.getIntegral()) ? "0" : tow.getIntegral()) + 1));
+                pointsRankingService.updateById(one);
+                pointsRankingService.updateById(tow);
+
+                jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "2");
+                jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "2");
             }
         }
         combatGainsService.updateById(combatGains);
         return R.data(combatGains);
+    }
+
+    public void jinShi(PointsRanking pointsRanking, String resultMain, String resultGuest,
+            String type) {
+        String s1 = StringUtils.isBlank(pointsRanking.getNearLoss()) ? "0/0"
+                : pointsRanking.getNearLoss();
+
+        String[] split1 = s1.split("/");
+
+        String s2 = StringUtils.isBlank(pointsRanking.getWinDrawLose()) ? "0/0/0"
+                : pointsRanking.getWinDrawLose();
+
+        String[] split2 = s2.split("/");
+        switch (type) {
+            // 胜
+            case "1":
+                split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultMain) + "";
+                split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultGuest) + "";
+
+                split2[0] = Integer.valueOf(split2[0]) + 1 + "";
+                break;
+            // 平
+            case "2":
+                split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultMain) + "";
+                split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultGuest) + "";
+
+                split2[1] = Integer.valueOf(split2[1]) + 1 + "";
+                break;
+            // 负
+            case "3":
+                split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultGuest) + "";
+                split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultMain) + "";
+
+                split2[2] = Integer.valueOf(split2[2]) + 1 + "";
+                break;
+        }
+        pointsRanking.setNearLoss(String.join("/", split1));
+        pointsRanking.setWinDrawLose(String.join("/", split2));
+        pointsRankingService.updateById(pointsRanking);
     }
 
     public void upPurchaseLog(PurchaseLog purchaseLog, CombatGains combatGains, Integer type) {
