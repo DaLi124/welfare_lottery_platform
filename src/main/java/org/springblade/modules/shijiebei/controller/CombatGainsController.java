@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -64,6 +65,38 @@ public class CombatGainsController {
         LambdaQueryWrapper<CombatGains> queryWrapper = new LambdaQueryWrapper<>();
         //添加排序条件，根据sort进行排序
         queryWrapper.orderByAsc(CombatGains::getId);
+
+        //分页查询
+        combatGainsService.page(pageInfo, queryWrapper);
+        return R.data(pageInfo);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param page     页数
+     * @param pageSize 每页数量
+     * @return 返回信息
+     */
+    @GetMapping("/page-yhd")
+    public R<Page> pageYhd(int page, int pageSize) {
+        //分页构造器
+        Page<CombatGains> pageInfo = new Page<>(page, pageSize);
+        //条件构造器
+        LambdaQueryWrapper<CombatGains> queryWrapper = new LambdaQueryWrapper<>();
+        //添加排序条件，根据sort进行排序
+        queryWrapper.orderByAsc(CombatGains::getId);
+        // 添加显示今天数据条件
+        //调用的代码
+
+        Date start = DateUtil.parse(
+                DateUtil.format(DateUtil.now(), DateUtil.PATTERN_DATE) + " 00:00:00",
+                DateUtil.PATTERN_DATETIME);
+        Date end = DateUtil.parse(
+                DateUtil.format(DateUtil.now(), DateUtil.PATTERN_DATE) + " 23:59:59",
+                DateUtil.PATTERN_DATETIME);
+        queryWrapper.ge(CombatGains::getGameDate, start);
+        queryWrapper.lt(CombatGains::getGameDate, end);
 
         //分页查询
         combatGainsService.page(pageInfo, queryWrapper);
@@ -219,7 +252,8 @@ public class CombatGainsController {
 
         User user = new User();
         user.setUserFortunellaVenosa(
-                user.getUserFortunellaVenosa() + subtract.setScale(2, RoundingMode.HALF_UP)
+                Optional.ofNullable(user.getUserFortunellaVenosa()).orElse((double) 0)
+                        + subtract.setScale(2, RoundingMode.HALF_UP)
                         .doubleValue());
         user.setId(purchaseLog.getUserId());
         userService.updateById(user);
