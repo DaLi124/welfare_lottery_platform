@@ -20,7 +20,9 @@ public class PointsRankingServiceImpl extends ServiceImpl<PointsRankingMapper, P
 	public R<Page<PointsRanking>> getAllPointsRanking(PointsRanking pointsRanking,
 		Page<PointsRanking> pointsRankingPage) {
 		return R.data(page(pointsRankingPage,
-			new LambdaQueryWrapper<PointsRanking>().setEntity(pointsRanking)));
+			new LambdaQueryWrapper<PointsRanking>()
+					.setEntity(pointsRanking)
+					.orderByDesc(PointsRanking::getIntegral)));
 	}
 
 	@Override
