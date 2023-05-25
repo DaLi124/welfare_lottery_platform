@@ -44,19 +44,19 @@ public class PurchaseLogServiceImpl extends ServiceImpl<PurchaseLogMapper, Purch
         purchaseLog.setUserId(AuthUtil.getUserId());
         User byId = userService.getById(AuthUtil.getUserId());
         if (purchaseLog.getUserFortunellaVenosa() <= 0) {
-            return R.fail("购买金额需要大于0个金币。");
+            return R.success("购买金额需要大于0个金币。");
         }
         if (purchaseLog.getUserFortunellaVenosa() > byId.getUserFortunellaVenosa()) {
-            return R.fail("金币不足，请充值！");
+            return R.success("金币不足，请充值！");
         }
 
         CombatGains byId1 = combatGainsService.getById(purchaseLog.getCombatGainsId());
         if (null == byId1) {
-            return R.fail("购买项不存在。");
+            return R.success("购买项不存在。");
         }
         if (StringUtil.isNoneBlank(byId1.getResultMain()) && StringUtil.isNoneBlank(
                 byId1.getResultGuest())) {
-            return R.fail("结果已出不能购买。");
+            return R.success("结果已出不能购买。");
         }
         BeanUtil.copy(byId1, purchaseLog);
         switch (purchaseLog.getPurchaseType()) {
