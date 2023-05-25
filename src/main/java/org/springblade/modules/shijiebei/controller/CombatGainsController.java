@@ -115,7 +115,7 @@ public class CombatGainsController {
                                             .eq(PointsRanking::getTeam,
                                                     purchaseLog.getTeamMain()));
                             one.setIntegral(String.valueOf(Integer.valueOf(
-                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
+                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 3));
 
                             /*one.setNearLoss();
                             one.setWinDrawLose();*/
@@ -145,7 +145,7 @@ public class CombatGainsController {
                                             .eq(PointsRanking::getTeam,
                                                     purchaseLog.getTeamGuest()));
                             one.setIntegral(String.valueOf(Integer.valueOf(
-                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
+                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 3));
 
                             /*one.setNearLoss();
                             one.setWinDrawLose();*/
@@ -164,6 +164,27 @@ public class CombatGainsController {
                         if (Integer.valueOf("3").equals(purchaseLog.getPurchaseType())) {
                             // 修改购买记录，给用户添加金豆
                             upPurchaseLog(purchaseLog, combatGains, 1);
+
+                            // 修改球队的积分
+                            PointsRanking one = pointsRankingService.getOne(
+                                    new LambdaQueryWrapper<PointsRanking>()
+                                            .eq(PointsRanking::getGroupsRedundance,
+                                                    purchaseLog.getType())
+                                            .eq(PointsRanking::getTeam,
+                                                    purchaseLog.getTeamGuest()));
+                            one.setIntegral(String.valueOf(Integer.valueOf(
+                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
+
+                            PointsRanking tow = pointsRankingService.getOne(
+                                    new LambdaQueryWrapper<PointsRanking>()
+                                            .eq(PointsRanking::getGroupsRedundance,
+                                                    purchaseLog.getType())
+                                            .eq(PointsRanking::getTeam,
+                                                    purchaseLog.getTeamMain()));
+                            one.setIntegral(String.valueOf(Integer.valueOf(
+                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
+                            pointsRankingService.updateById(one);
+                            pointsRankingService.updateById(tow);
                         } else {
                             purchaseLog.setResultType(2);
                             purchaseLog.setResultMain(combatGains.getResultMain());
