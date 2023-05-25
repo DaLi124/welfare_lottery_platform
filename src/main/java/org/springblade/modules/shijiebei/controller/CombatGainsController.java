@@ -250,13 +250,13 @@ public class CombatGainsController {
         logOrtunellaVenosa.setCreateTime(DateUtil.now());
         logOrtunellaVenosaService.save(logOrtunellaVenosa);
 
-        User user = new User();
-        user.setUserFortunellaVenosa(
-                Optional.ofNullable(user.getUserFortunellaVenosa()).orElse((double) 0)
-                        + subtract.setScale(2, RoundingMode.HALF_UP)
-                        .doubleValue());
-        user.setId(purchaseLog.getUserId());
-        userService.updateById(user);
+        User byId = userService.getById(AuthUtil.getUserId());
+        byId.setUserFortunellaVenosa(
+                BigDecimal.valueOf(
+                                Optional.ofNullable(byId.getUserFortunellaVenosa()).orElse((double) 0))
+                        .add(subtract).doubleValue()
+        );
+        userService.updateById(byId);
     }
 
 
