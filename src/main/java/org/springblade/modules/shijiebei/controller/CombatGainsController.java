@@ -214,8 +214,8 @@ public class CombatGainsController {
                                                     purchaseLog.getType())
                                             .eq(PointsRanking::getTeam,
                                                     purchaseLog.getTeamMain()));
-                            one.setIntegral(String.valueOf(Integer.valueOf(
-                                    Optional.ofNullable(one.getIntegral()).orElse("0")) + 1));
+                            tow.setIntegral(String.valueOf(Integer.valueOf(
+                                    Optional.ofNullable(tow.getIntegral()).orElse("0")) + 1));
                             pointsRankingService.updateById(one);
                             pointsRankingService.updateById(tow);
                         } else {
