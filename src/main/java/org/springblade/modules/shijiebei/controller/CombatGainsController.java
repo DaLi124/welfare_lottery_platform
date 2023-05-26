@@ -149,29 +149,33 @@ public class CombatGainsController {
                         }
                     });
                 }
-                // 修改球队的积分
-                PointsRanking one = pointsRankingService.getOne(
-                        new LambdaQueryWrapper<PointsRanking>()
-                                .eq(PointsRanking::getGroupsRedundance,
-                                        combatGains.getType())
-                                .eq(PointsRanking::getTeam,
-                                        combatGains.getTeamMain()));
-                one.setIntegral(String.valueOf(Integer.valueOf(
-                        StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 3));
+                if (StringUtil.equals(combatGains.getType().substring(0, 3), "小组赛")) {
+                    // 修改球队的积分
+                    PointsRanking one = pointsRankingService.getOne(
+                            new LambdaQueryWrapper<PointsRanking>()
+                                    .eq(PointsRanking::getGroupsRedundance,
+                                            combatGains.getType().substring(0, 5))
+                                    .eq(PointsRanking::getTeam,
+                                            combatGains.getTeamMain()));
+                    one.setIntegral(String.valueOf(Integer.valueOf(
+                            StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 3));
 
                             /*one.setNearLoss();
                             one.setWinDrawLose();*/
-                pointsRankingService.updateById(one);
+                    pointsRankingService.updateById(one);
 
-                PointsRanking tow = pointsRankingService.getOne(
-                        new LambdaQueryWrapper<PointsRanking>()
-                                .eq(PointsRanking::getGroupsRedundance,
-                                        combatGains.getType())
-                                .eq(PointsRanking::getTeam,
-                                        combatGains.getTeamGuest()));
+                    PointsRanking tow = pointsRankingService.getOne(
+                            new LambdaQueryWrapper<PointsRanking>()
+                                    .eq(PointsRanking::getGroupsRedundance,
+                                            combatGains.getType().substring(0, 5))
+                                    .eq(PointsRanking::getTeam,
+                                            combatGains.getTeamGuest()));
 
-                jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "1");
-                jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "3");
+                    jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "1",
+                            "1");
+                    jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "3",
+                            "1");
+                }
             }
             // 如果客队赢
             if (Integer.valueOf(combatGains.getResultMain()) < Integer.valueOf(
@@ -190,28 +194,32 @@ public class CombatGainsController {
                     });
                 }
 
-                // 修改球队的积分
-                PointsRanking one = pointsRankingService.getOne(
-                        new LambdaQueryWrapper<PointsRanking>()
-                                .eq(PointsRanking::getGroupsRedundance,
-                                        combatGains.getType())
-                                .eq(PointsRanking::getTeam,
-                                        combatGains.getTeamGuest()));
-                one.setIntegral(String.valueOf(Integer.valueOf(
-                        StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 3));
+                if (StringUtil.equals(combatGains.getType().substring(0, 3), "小组赛")) {
+                    // 修改球队的积分
+                    PointsRanking one = pointsRankingService.getOne(
+                            new LambdaQueryWrapper<PointsRanking>()
+                                    .eq(PointsRanking::getGroupsRedundance,
+                                            combatGains.getType().substring(0, 5))
+                                    .eq(PointsRanking::getTeam,
+                                            combatGains.getTeamGuest()));
+                    one.setIntegral(String.valueOf(Integer.valueOf(
+                            StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 3));
 
                             /*one.setNearLoss();
                             one.setWinDrawLose();*/
-                pointsRankingService.updateById(one);
+                    pointsRankingService.updateById(one);
 
-                PointsRanking tow = pointsRankingService.getOne(
-                        new LambdaQueryWrapper<PointsRanking>()
-                                .eq(PointsRanking::getGroupsRedundance,
-                                        combatGains.getType())
-                                .eq(PointsRanking::getTeam,
-                                        combatGains.getTeamMain()));
-                jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "1");
-                jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "3");
+                    PointsRanking tow = pointsRankingService.getOne(
+                            new LambdaQueryWrapper<PointsRanking>()
+                                    .eq(PointsRanking::getGroupsRedundance,
+                                            combatGains.getType().substring(0, 5))
+                                    .eq(PointsRanking::getTeam,
+                                            combatGains.getTeamMain()));
+                    jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "1",
+                            "2");
+                    jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "3",
+                            "2");
+                }
             }
             // 如果平
             if (StringUtil.equals(combatGains.getResultMain(), combatGains.getResultGuest())) {
@@ -228,29 +236,33 @@ public class CombatGainsController {
                         }
                     });
                 }
-                // 修改球队的积分
-                PointsRanking one = pointsRankingService.getOne(
-                        new LambdaQueryWrapper<PointsRanking>()
-                                .eq(PointsRanking::getGroupsRedundance,
-                                        combatGains.getType())
-                                .eq(PointsRanking::getTeam,
-                                        combatGains.getTeamGuest()));
-                one.setIntegral(String.valueOf(Integer.valueOf(
-                        StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 1));
+                if (StringUtil.equals(combatGains.getType().substring(0, 3), "小组赛")) {
+                    // 修改球队的积分
+                    PointsRanking one = pointsRankingService.getOne(
+                            new LambdaQueryWrapper<PointsRanking>()
+                                    .eq(PointsRanking::getGroupsRedundance,
+                                            combatGains.getType().substring(0, 5))
+                                    .eq(PointsRanking::getTeam,
+                                            combatGains.getTeamGuest()));
+                    one.setIntegral(String.valueOf(Integer.valueOf(
+                            StringUtils.isBlank(one.getIntegral()) ? "0" : one.getIntegral()) + 1));
 
-                PointsRanking tow = pointsRankingService.getOne(
-                        new LambdaQueryWrapper<PointsRanking>()
-                                .eq(PointsRanking::getGroupsRedundance,
-                                        combatGains.getType())
-                                .eq(PointsRanking::getTeam,
-                                        combatGains.getTeamMain()));
-                tow.setIntegral(String.valueOf(Integer.valueOf(
-                        StringUtils.isBlank(tow.getIntegral()) ? "0" : tow.getIntegral()) + 1));
-                pointsRankingService.updateById(one);
-                pointsRankingService.updateById(tow);
+                    PointsRanking tow = pointsRankingService.getOne(
+                            new LambdaQueryWrapper<PointsRanking>()
+                                    .eq(PointsRanking::getGroupsRedundance,
+                                            combatGains.getType().substring(0, 5))
+                                    .eq(PointsRanking::getTeam,
+                                            combatGains.getTeamMain()));
+                    tow.setIntegral(String.valueOf(Integer.valueOf(
+                            StringUtils.isBlank(tow.getIntegral()) ? "0" : tow.getIntegral()) + 1));
+                    pointsRankingService.updateById(one);
+                    pointsRankingService.updateById(tow);
 
-                jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "2");
-                jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "2");
+                    jinShi(one, combatGains.getResultMain(), combatGains.getResultGuest(), "2",
+                            "3");
+                    jinShi(tow, combatGains.getResultMain(), combatGains.getResultGuest(), "2",
+                            "3");
+                }
             }
         }
         combatGainsService.updateById(combatGains);
@@ -258,7 +270,7 @@ public class CombatGainsController {
     }
 
     public void jinShi(PointsRanking pointsRanking, String resultMain, String resultGuest,
-            String type) {
+            String type, String type2) {
         String s1 = StringUtils.isBlank(pointsRanking.getNearLoss()) ? "0/0"
                 : pointsRanking.getNearLoss();
 
@@ -271,10 +283,20 @@ public class CombatGainsController {
         switch (type) {
             // 胜
             case "1":
-                split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultMain) + "";
-                split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultGuest) + "";
+                switch (type2) {
+                    case "1":
+                        split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultMain) + "";
+                        split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultGuest) + "";
 
-                split2[0] = Integer.valueOf(split2[0]) + 1 + "";
+                        split2[0] = Integer.valueOf(split2[0]) + 1 + "";
+                        break;
+                    case "2":
+                        split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultGuest) + "";
+                        split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultMain) + "";
+
+                        split2[0] = Integer.valueOf(split2[0]) + 1 + "";
+                        break;
+                }
                 break;
             // 平
             case "2":
@@ -285,10 +307,20 @@ public class CombatGainsController {
                 break;
             // 负
             case "3":
-                split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultGuest) + "";
-                split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultMain) + "";
+                switch (type2) {
+                    case "1":
+                        split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultGuest) + "";
+                        split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultMain) + "";
 
-                split2[2] = Integer.valueOf(split2[2]) + 1 + "";
+                        split2[2] = Integer.valueOf(split2[2]) + 1 + "";
+                        break;
+                    case "2":
+                        split1[0] = Integer.valueOf(split1[0]) + Integer.valueOf(resultMain) + "";
+                        split1[1] = Integer.valueOf(split1[1]) + Integer.valueOf(resultGuest) + "";
+
+                        split2[2] = Integer.valueOf(split2[2]) + 1 + "";
+                        break;
+                }
                 break;
         }
         pointsRanking.setNearLoss(String.join("/", split1));

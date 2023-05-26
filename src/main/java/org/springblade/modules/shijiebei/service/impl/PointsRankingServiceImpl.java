@@ -14,39 +14,40 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PointsRankingServiceImpl extends ServiceImpl<PointsRankingMapper, PointsRanking>
-	implements PointsRankingService {
+        implements PointsRankingService {
 
-	@Override
-	public R<Page<PointsRanking>> getAllPointsRanking(PointsRanking pointsRanking,
-		Page<PointsRanking> pointsRankingPage) {
-		return R.data(page(pointsRankingPage,
-			new LambdaQueryWrapper<PointsRanking>()
-					.setEntity(pointsRanking)
-					.orderByDesc(PointsRanking::getIntegral)));
-	}
+    @Override
+    public R<Page<PointsRanking>> getAllPointsRanking(PointsRanking pointsRanking,
+            Page<PointsRanking> pointsRankingPage) {
+        return R.data(page(pointsRankingPage,
+                new LambdaQueryWrapper<PointsRanking>()
+                        .setEntity(pointsRanking)
+                        .orderByAsc(PointsRanking::getGroups)
+                        .orderByDesc(PointsRanking::getIntegral)));
+    }
 
-	@Override
-	public R<PointsRanking> getPointsRankingById(Long id) {
-		return R.data(getById(id));
-	}
+    @Override
+    public R<PointsRanking> getPointsRankingById(Long id) {
+        return R.data(getById(id));
+    }
 
-	@Override
-	public R<PointsRanking> createPointsRanking(PointsRanking pointsRanking) {
-		save(pointsRanking);
-		return R.data(pointsRanking);
-	}
+    @Override
+    public R<PointsRanking> createPointsRanking(PointsRanking pointsRanking) {
+        save(pointsRanking);
+        return R.data(pointsRanking);
+    }
 
-	@Override
-	public R<PointsRanking> updatePointsRanking(PointsRanking pointsRanking) {
-		updateById(pointsRanking);
-		return R.data(pointsRanking);
-	}
+    @Override
+    public R<PointsRanking> updatePointsRanking(PointsRanking pointsRanking) {
+        updateById(pointsRanking);
+        return R.data(pointsRanking);
+    }
 
-	@Override
-	public R<String> deletePointsRanking(Long id) {
-		boolean b = removeById(id);
-		return R.data(Boolean.toString(b), "删除成功！");
-	}
+    @Override
+    public R<String> deletePointsRanking(Long id) {
+        boolean b = removeById(id);
+        return R.data(Boolean.toString(b), "删除成功！");
+    }
 }
 
 
