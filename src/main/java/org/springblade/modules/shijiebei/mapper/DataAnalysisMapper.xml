@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.shijiebei.mapper.DataAnalysisMapper">
+
+    <select id="reachRank" resultType="java.util.Map">
+        select b.account, num
+        from (select user_id, count(1) as num
+              from t_purchase_log
+              group by user_id
+              order by num desc
+                  limit 10) as a
+                 left join blade_user as b on a.user_id = b.id
+    </select>
+
+    <select id="purchaseRanking" resultType="java.util.Map">
+        select CONCAT(CONCAT(team_main, case purchase_type
+        when 1 then ' 赢 '
+        when 2 then ' 输 '
+        when 3 then ' 平 ' end), team_guest) as account,
+        count(1)                                                       as num
+        from t_purchase_log
+        where date(game_date) = CURDATE()
+        group by account
+    </select>
+
+    <select id="goldenBeanRanking" resultType="java.util.Map">
+        select CONCAT(CONCAT(team_main, case purchase_type
+                                            when 1 then ' 赢 '
+                                            when 2 then ' 输 '
+                                            when 3 then ' 平 ' end), team_guest) as account,
+               sum(user_fortunella_venosa)                                       as num
+        from t_purchase_log
+        where date (game_date) = CURDATE()
+        group by account
+    </select>
+
+
+    <select id="incomingAndOutgoingAccounts" resultType="java.util.Map">
+        select case
+                   when FORMAT(sum(number), 2) >= 0 then FORMAT(sum(number), 2)
+                   else -FORMAT(sum(number), 2) end          as num,
+               case when number >= 0 then '进' else '出' end as account
+        from t_log_ortunella_venosa
+        where date(create_time) = CURDATE()
+        group by account
+        order by account desc
+    </select>
+
+</mapper>
